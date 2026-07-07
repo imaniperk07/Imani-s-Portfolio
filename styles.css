@@ -27,6 +27,49 @@ html, body {
 }
 
 /* ============================================================
+   Boot screen
+   ============================================================ */
+#boot-screen {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 26px;
+  transition: opacity 500ms ease;
+}
+#boot-screen.hidden { opacity: 0; pointer-events: none; }
+.boot-logo {
+  font-family: var(--font-display);
+  font-size: 46px; font-weight: 700; color: #fff;
+  letter-spacing: 1px;
+  animation: boot-fade-in 900ms ease both;
+}
+@keyframes boot-fade-in {
+  from { opacity: 0; transform: scale(.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.boot-bar-track {
+  width: 220px; height: 8px; border-radius: 4px;
+  background: #2b2b2e;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.6);
+}
+.boot-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(to right, #4fa8e0, #2f7fd6);
+  border-radius: 4px;
+  animation: boot-fill 1.6s ease forwards;
+}
+@keyframes boot-fill { from { width: 0%; } to { width: 100%; } }
+
+/* ============================================================
+   Cursor trail
+   ============================================================ */
+#cursor-trail {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 8000;
+}
+
+/* ============================================================
    Menu bar
    ============================================================ */
 .menubar {
@@ -65,6 +108,7 @@ html, body {
 .wallpaper-modeling   { background: radial-gradient(circle at 25% 20%, #7fb3d5 0%, #1b4965 45%, #0a1622 100%); }
 .wallpaper-camera     { background: radial-gradient(circle at 70% 15%, #8de3c4 0%, #0c6656 45%, #05201b 100%); }
 .wallpaper-contact    { background: radial-gradient(circle at 30% 20%, #a99bee 0%, #4b3f8f 45%, #0a0a1a 100%); }
+.wallpaper-resume     { background: radial-gradient(circle at 65% 20%, #d8dde2 0%, #8f969c 45%, #34383c 100%); }
 
 /* ============================================================
    Desktop icons
@@ -106,6 +150,7 @@ html, body {
 .badge-modeling  { background: linear-gradient(160deg, #9fd0e8, #3c7fa6 60%, #1c4560); }
 .badge-camera    { background: linear-gradient(160deg, #8ce8c6, #2fa87e 60%, #14603f); }
 .badge-contact   { background: linear-gradient(160deg, #c6b8f5, #6a5acd 60%, #3a2e73); }
+.badge-resume    { background: linear-gradient(160deg, #cfd3d8, #8f969c 60%, #5a6066); }
 
 /* ============================================================
    Windows
@@ -207,6 +252,16 @@ h1 { font-size: 21px; margin: 0 0 2px; }
 
 /* Contact window */
 .placeholder-note { font-size: 11.5px; color: #9199a1; font-style: italic; margin-top: 10px; }
+
+/* Resume window */
+.resume-download-btn {
+  display: inline-block;
+  background: linear-gradient(to bottom, #4fa8e0, #2f7fd6 55%, #185a9e);
+  color: #fff; text-decoration: none; font-weight: 700; font-size: 13.5px;
+  padding: 10px 20px; border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.5);
+}
+.resume-download-btn:hover { filter: brightness(1.06); }
 
 /* Resize handle (decorative, aqua-authentic) */
 .resize-handle {
