@@ -1,0 +1,262 @@
+/* ============================================================
+   Tokens
+   ============================================================ */
+:root {
+  --chrome-light: #f5f6f7;
+  --chrome-mid: #d3d7db;
+  --chrome-dark: #9aa0a6;
+  --chrome-shadow: rgba(0,0,0,.35);
+  --aqua-blue: #2f7fd6;
+  --aqua-blue-dark: #0d4a8c;
+  --ink: #1b1d1f;
+  --ink-soft: #4a4e53;
+  --red: #ff5f57;
+  --yellow: #ffbd2e;
+  --green: #28c840;
+
+  --font-ui: "Lucida Grande", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; height: 100%;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ============================================================
+   Menu bar
+   ============================================================ */
+.menubar {
+  position: fixed; top: 0; left: 0; right: 0; height: 24px;
+  background: linear-gradient(to bottom, #fbfbfc 0%, #e3e6e9 45%, #cfd3d8 100%);
+  border-bottom: 1px solid #8b9096;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px;
+  font-size: 13px;
+  z-index: 5000;
+  -webkit-user-select: none; user-select: none;
+}
+.menubar-left, .menubar-right { display: flex; align-items: center; gap: 18px; }
+.wordmark {
+  font-weight: 700; letter-spacing: .5px; cursor: pointer;
+  color: var(--ink);
+  padding: 0 2px;
+}
+.menu-item { color: var(--ink-soft); cursor: default; }
+.status-icon { color: var(--ink-soft); font-size: 12px; }
+#clock { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   Desktop + wallpapers
+   ============================================================ */
+#desktop {
+  position: fixed; inset: 0; top: 24px; bottom: 64px;
+  transition: background 900ms ease;
+  overflow: hidden;
+}
+
+.wallpaper-default   { background: radial-gradient(circle at 70% 20%, #57c8d9 0%, #12879e 42%, #0b3d57 100%); }
+.wallpaper-about      { background: radial-gradient(circle at 30% 15%, #eab8e4 0%, #7597de 45%, #2b1055 100%); }
+.wallpaper-design     { background: radial-gradient(circle at 75% 25%, #ffcf86 0%, #e8863a 45%, #5c1a1a 100%); }
+.wallpaper-modeling   { background: radial-gradient(circle at 25% 20%, #7fb3d5 0%, #1b4965 45%, #0a1622 100%); }
+.wallpaper-camera     { background: radial-gradient(circle at 70% 15%, #8de3c4 0%, #0c6656 45%, #05201b 100%); }
+.wallpaper-contact    { background: radial-gradient(circle at 30% 20%, #a99bee 0%, #4b3f8f 45%, #0a0a1a 100%); }
+
+/* ============================================================
+   Desktop icons
+   ============================================================ */
+.desktop-icons {
+  position: absolute; top: 24px; right: 20px;
+  display: flex; flex-direction: column; gap: 26px;
+  z-index: 10;
+}
+.icon {
+  background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  width: 84px;
+  padding: 6px 4px; border-radius: 8px;
+  -webkit-user-select: none; user-select: none;
+}
+.icon:hover { background: rgba(255,255,255,.12); }
+.icon:active .badge { transform: scale(.94); }
+.icon .label {
+  color: #fff; font-size: 12px; line-height: 1.25;
+  text-shadow: 0 1px 3px rgba(0,0,0,.85);
+  text-align: center;
+}
+.badge {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 6px rgba(0,0,0,.4), inset 0 1px 1px rgba(255,255,255,.5);
+  position: relative; overflow: hidden;
+  transition: transform 120ms ease;
+}
+.badge::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 46%;
+  background: linear-gradient(to bottom, rgba(255,255,255,.55), rgba(255,255,255,0));
+  border-radius: 14px 14px 50% 50%/14px 14px 100% 100%;
+}
+.badge svg { width: 30px; height: 30px; position: relative; z-index: 1; }
+.badge-about     { background: linear-gradient(160deg, #8ec8ff, #2f7fd6 60%, #144d8c); }
+.badge-design    { background: linear-gradient(160deg, #ffd27a, #e8863a 60%, #a8461a); }
+.badge-modeling  { background: linear-gradient(160deg, #9fd0e8, #3c7fa6 60%, #1c4560); }
+.badge-camera    { background: linear-gradient(160deg, #8ce8c6, #2fa87e 60%, #14603f); }
+.badge-contact   { background: linear-gradient(160deg, #c6b8f5, #6a5acd 60%, #3a2e73); }
+
+/* ============================================================
+   Windows
+   ============================================================ */
+.window {
+  position: absolute;
+  width: 560px;
+  max-width: 90vw;
+  background: #eef1f3;
+  border-radius: 9px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.45), 0 0 0 1px rgba(0,0,0,.15);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 100;
+  animation: pop-in 220ms cubic-bezier(.2,1.4,.4,1);
+}
+.window.open { display: flex; }
+.window.active { z-index: 500; }
+.window.maximized { width: 86vw; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.titlebar {
+  height: 27px; flex: 0 0 auto;
+  background: linear-gradient(to bottom, #fdfdfe 0%, #e6e9ec 40%, #c9ced3 100%);
+  border-bottom: 1px solid #9aa0a6;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 10px;
+  cursor: grab;
+  -webkit-user-select: none; user-select: none;
+  position: relative;
+}
+.titlebar:active { cursor: grabbing; }
+.titletext {
+  position: absolute; left: 0; right: 0; text-align: center;
+  font-size: 13px; font-weight: 700; color: #3a3d40;
+  pointer-events: none;
+}
+.traffic { display: flex; gap: 8px; z-index: 1; }
+.traffic span {
+  width: 12px; height: 12px; border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+  cursor: pointer;
+}
+.tl-close { background: radial-gradient(circle at 35% 30%, #ff958f, var(--red)); }
+.tl-min   { background: radial-gradient(circle at 35% 30%, #ffe08a, var(--yellow)); }
+.tl-zoom  { background: radial-gradient(circle at 35% 30%, #7bec8e, var(--green)); }
+
+.window-content {
+  padding: 22px 26px 28px;
+  overflow-y: auto;
+  max-height: 72vh;
+  background: #eef1f3;
+}
+
+.window-intro { color: var(--ink-soft); margin-top: 0; }
+
+/* About window */
+.about-grid { display: flex; gap: 20px; align-items: center; margin-bottom: 10px; }
+.about-photo-slot { width: 84px; height: 84px; border-radius: 50%; background: #cfd7de; flex: 0 0 auto; overflow: hidden; }
+.about-photo-slot svg { width: 100%; height: 100%; }
+h1 { font-size: 21px; margin: 0 0 2px; }
+.tagline { margin: 0 0 8px; color: var(--aqua-blue-dark); font-weight: 600; font-size: 13px; }
+.meta-table { border-collapse: collapse; font-size: 13px; }
+.meta-table td { padding: 2px 10px 2px 0; vertical-align: top; }
+.meta-table td:first-child { color: var(--ink-soft); font-weight: 600; white-space: nowrap; }
+.skills-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.skill-chip {
+  background: linear-gradient(to bottom, #fff, #dde3e8);
+  border: 1px solid #b7bec4;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* Gallery */
+.gallery {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.gallery figure { margin: 0; }
+.gallery img {
+  width: 100%; display: block; border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25), inset 0 0 0 1px rgba(0,0,0,.08);
+}
+.gallery figcaption {
+  font-size: 11.5px; color: var(--ink-soft); margin-top: 6px; line-height: 1.35;
+}
+
+/* Camera window */
+.video-embed { position: relative; width: 100%; padding-top: 56.25%; margin-bottom: 10px; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+.video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.caption-line { font-size: 12px; color: var(--ink-soft); margin: 0 0 16px; }
+.camera-list { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.7; }
+
+/* Contact window */
+.placeholder-note { font-size: 11.5px; color: #9199a1; font-style: italic; margin-top: 10px; }
+
+/* Resize handle (decorative, aqua-authentic) */
+.resize-handle {
+  position: absolute; right: 2px; bottom: 2px; width: 14px; height: 14px;
+  background:
+    linear-gradient(135deg, transparent 0 40%, #b6bcc2 40% 46%, transparent 46% 56%, #b6bcc2 56% 62%, transparent 62% 72%, #b6bcc2 72% 78%, transparent 78%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   Dock
+   ============================================================ */
+.dock {
+  position: fixed; left: 50%; bottom: 10px; transform: translateX(-50%);
+  height: 56px; padding: 6px 14px;
+  display: flex; align-items: flex-end; gap: 14px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.28), rgba(255,255,255,.08));
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 18px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  z-index: 4000;
+}
+.dock-icon {
+  width: 42px; height: 42px; border-radius: 11px; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #9fd0e8, #2f7fd6 60%, #144d8c);
+  box-shadow: 0 2px 5px rgba(0,0,0,.35), inset 0 1px 1px rgba(255,255,255,.5);
+  transition: transform 140ms ease;
+}
+.dock-icon:hover { transform: translateY(-8px) scale(1.08); }
+.dock-icon svg { width: 24px; height: 24px; }
+.dock-trash { background: linear-gradient(160deg, #cfd3d8, #8f969c 60%, #5a6066); }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 720px) {
+  .desktop-icons { right: 10px; gap: 18px; }
+  .badge { width: 44px; height: 44px; }
+  .icon { width: 64px; }
+  .window { width: 92vw; left: 4vw !important; top: 8vw !important; }
+  .gallery { grid-template-columns: 1fr; }
+  .about-grid { flex-direction: column; align-items: flex-start; }
+  .dock { gap: 8px; padding: 5px 10px; }
+  .dock-icon { width: 36px; height: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window { animation: none; }
+  #desktop { transition: none; }
+  .dock-icon:hover { transform: none; }
+}
