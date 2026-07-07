@@ -5,6 +5,87 @@
   var openWindows = [];
   var topZ = 100;
 
+  // ----------------------------------------------------------
+  // Boot screen
+  // ----------------------------------------------------------
+  window.addEventListener("load", function () {
+    setTimeout(function () {
+      var boot = document.getElementById("boot-screen");
+      if (boot) boot.classList.add("hidden");
+    }, 1700);
+  });
+
+  // ----------------------------------------------------------
+  // Sound effects (synthesized, no external audio files needed)
+  // ----------------------------------------------------------
+  var audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) audioCtx = new Ctx();
+    }
+    return audioCtx;
+  }
+  function playTone(freq, duration, type, gainPeak) {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    if (ctx.state === "suspended") ctx.resume();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(gainPeak || 0.12, ctx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration + 0.02);
+  }
+  function soundOpen()  { playTone(720, 0.11, "sine", 0.10); setTimeout(function(){ playTone(980, 0.09, "sine", 0.08); }, 55); }
+  function soundClose() { playTone(520, 0.10, "sine", 0.09); setTimeout(function(){ playTone(360, 0.12, "sine", 0.07); }, 45); }
+  function soundClick() { playTone(880, 0.06, "square", 0.05); }
+
+  // ----------------------------------------------------------
+  // Cursor trail
+  // ----------------------------------------------------------
+  (function cursorTrail() {
+    var canvas = document.getElementById("cursor-trail");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var points = [];
+    var maxPoints = 16;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    window.addEventListener("mousemove", function (e) {
+      points.push({ x: e.clientX, y: e.clientY, t: Date.now() });
+      if (points.length > maxPoints) points.shift();
+    });
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var now = Date.now();
+      for (var i = 0; i < points.length; i++) {
+        var p = points[i];
+        var age = (now - p.t) / 400;
+        if (age > 1) continue;
+        var alpha = (1 - age) * 0.5;
+        var radius = 5 * (1 - age) + 1.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255," + alpha.toFixed(3) + ")";
+        ctx.fill();
+      }
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  })();
+
   function windowEl(name) {
     return document.getElementById("window-" + name);
   }
@@ -24,7 +105,9 @@
       desktop.className = wallpaperClass;
     }
 
-    if (!win.classList.contains("open")) {
+    var alreadyOpen = win.classList.contains("open");
+    if (!alreadyOpen) {
+      soundOpen();
       win.classList.add("open");
       win.style.animation = "none";
       // restart pop-in animation
@@ -38,6 +121,7 @@
   function closeWindow(name) {
     var win = windowEl(name);
     if (!win) return;
+    soundClose();
     win.classList.remove("open");
     openWindows = openWindows.filter(function (n) { return n !== name; });
     if (openWindows.length === 0) {
@@ -48,6 +132,7 @@
   function minimizeWindow(name) {
     var win = windowEl(name);
     if (!win) return;
+    soundClick();
     win.style.transition = "transform 260ms ease, opacity 260ms ease";
     win.style.transform = "scale(.1) translateY(600px)";
     win.style.opacity = "0";
@@ -64,6 +149,7 @@
   function toggleZoom(name) {
     var win = windowEl(name);
     if (!win) return;
+    soundClick();
     win.classList.toggle("maximized");
   }
 
